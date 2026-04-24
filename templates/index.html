@@ -1,0 +1,688 @@
+<!doctype html>
+<html lang="vi">
+    <head>
+        <meta charset="UTF-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+        />
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script>
+            tailwind.config = {
+                darkMode: "class",
+                theme: {
+                    extend: {
+                        colors: {
+                            primary: {
+                                50: "var(--p-50)",
+                                100: "var(--p-100)",
+                                200: "var(--p-200)",
+                                300: "var(--p-300)",
+                                400: "var(--p-400)",
+                                500: "var(--p-500)",
+                                600: "var(--p-600)",
+                                900: "var(--p-900)",
+                            },
+                        },
+                    },
+                },
+            };
+        </script>
+        <title>Góc Chia Sẻ Bé Bự 🍬</title>
+        <style>
+            @import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700;900&display=swap");
+
+            :root {
+                --p-50: #fff1f2;
+                --p-100: #ffe4e6;
+                --p-200: #fecdd3;
+                --p-300: #fda4af;
+                --p-400: #fb7185;
+                --p-500: #f43f5e;
+                --p-600: #e11d48;
+                --p-900: #881337;
+                --shadow-main: rgba(225, 29, 72, 0.1);
+                --shadow-btn: rgba(244, 63, 94, 0.3);
+            }
+            [data-theme="mint"] {
+                --p-50: #ecfdf5;
+                --p-100: #d1fae5;
+                --p-200: #a7f3d0;
+                --p-300: #6ee7b7;
+                --p-400: #34d399;
+                --p-500: #10b981;
+                --p-600: #059669;
+                --p-900: #064e3b;
+                --shadow-main: rgba(16, 185, 129, 0.1);
+                --shadow-btn: rgba(16, 185, 129, 0.3);
+            }
+            [data-theme="blueberry"] {
+                --p-50: #eef2ff;
+                --p-100: #e0e7ff;
+                --p-200: #c7d2fe;
+                --p-300: #a5b4fc;
+                --p-400: #818cf8;
+                --p-500: #6366f1;
+                --p-600: #4f46e5;
+                --p-900: #312e81;
+                --shadow-main: rgba(99, 102, 241, 0.1);
+                --shadow-btn: rgba(99, 102, 241, 0.3);
+            }
+            [data-theme="cheese"] {
+                --p-50: #fffbeb;
+                --p-100: #fef3c7;
+                --p-200: #fde68a;
+                --p-300: #fcd34d;
+                --p-400: #fbbf24;
+                --p-500: #f59e0b;
+                --p-600: #d97706;
+                --p-900: #78350f;
+                --shadow-main: rgba(245, 158, 11, 0.1);
+                --shadow-btn: rgba(245, 158, 11, 0.3);
+            }
+
+            body {
+                font-family: "Quicksand", sans-serif;
+                -webkit-tap-highlight-color: transparent;
+            }
+
+            /* Animations */
+            @keyframes blink {
+                0%,
+                96%,
+                98% {
+                    transform: scaleY(1);
+                }
+                97% {
+                    transform: scaleY(0.1);
+                }
+            }
+            .eye-blink {
+                animation: blink 4s infinite;
+            }
+
+            @keyframes chew {
+                0%,
+                100% {
+                    height: 0.5rem;
+                    border-radius: 9999px;
+                }
+                50% {
+                    height: 2.2rem;
+                    width: 2.8rem;
+                    border-radius: 40%;
+                    background-color: #1e293b;
+                }
+            }
+            .anim-chew {
+                animation: chew 0.25s infinite;
+            }
+
+            /* Hiệu ứng lắc đầu khi dỗi */
+            @keyframes shakeHead {
+                0%,
+                100% {
+                    transform: translateX(0);
+                }
+                15% {
+                    transform: translateX(-15px);
+                }
+                30% {
+                    transform: translateX(12px);
+                }
+                45% {
+                    transform: translateX(-10px);
+                }
+                60% {
+                    transform: translateX(7px);
+                }
+                75% {
+                    transform: translateX(-4px);
+                }
+            }
+            .anim-shake-head {
+                animation: shakeHead 0.5s ease-in-out both;
+            }
+
+            @keyframes bounce-slow {
+                0%,
+                100% {
+                    transform: translateY(0);
+                }
+                50% {
+                    transform: translateY(-10px);
+                }
+            }
+            .monster-idle {
+                animation: bounce-slow 3s infinite ease-in-out;
+            }
+
+            /* Toast Animation */
+            @keyframes slideUp {
+                from {
+                    transform: translateY(100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateY(0);
+                    opacity: 1;
+                }
+            }
+            .toast-in {
+                animation: slideUp 0.3s ease-out forwards;
+            }
+
+            .pupil {
+                transition: transform 0.1s ease-out;
+            }
+            .no-transition .pupil {
+                transition: none;
+            }
+            ::-webkit-scrollbar {
+                width: 4px;
+            }
+            ::-webkit-scrollbar-thumb {
+                background: var(--p-300);
+                border-radius: 10px;
+            }
+        </style>
+    </head>
+    <body
+        class="bg-primary-50 text-slate-700 dark:bg-slate-900 dark:text-slate-200 transition-colors duration-500 min-h-screen p-4 md:p-8 lg:p-12 selection:bg-primary-200"
+    >
+        <div
+            id="toast-container"
+            class="fixed bottom-5 right-5 z-[100] flex flex-col gap-3 pointer-events-none items-end"
+        ></div>
+
+        <div
+            class="w-full max-w-7xl mx-auto bg-white/90 dark:bg-slate-800/90 backdrop-blur-xl p-6 md:p-10 rounded-[2.5rem] md:rounded-[3.5rem] shadow-[0_20px_50px_var(--shadow-main)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.3)] border-4 border-white dark:border-slate-700 transition-all relative"
+        >
+            <div
+                class="flex flex-col sm:flex-row justify-between items-center gap-4 mb-10"
+            >
+                <div
+                    class="flex gap-2 p-2 bg-white/50 dark:bg-slate-700/50 rounded-full shadow-inner"
+                >
+                    <button
+                        onclick="setTheme('strawberry')"
+                        class="w-7 h-7 rounded-full bg-[#f43f5e] border-2 border-white hover:scale-110 transition-transform active:scale-90"
+                        title="Màu dâu tây"
+                    ></button>
+                    <button
+                        onclick="setTheme('mint')"
+                        class="w-7 h-7 rounded-full bg-[#10b981] border-2 border-white hover:scale-110 transition-transform active:scale-90"
+                        title="Màu bạc hà"
+                    ></button>
+                    <button
+                        onclick="setTheme('blueberry')"
+                        class="w-7 h-7 rounded-full bg-[#6366f1] border-2 border-white hover:scale-110 transition-transform active:scale-90"
+                        title="Màu việt quất"
+                    ></button>
+                    <button
+                        onclick="setTheme('cheese')"
+                        class="w-7 h-7 rounded-full bg-[#f59e0b] border-2 border-white hover:scale-110 transition-transform active:scale-90"
+                        title="Màu phô mai"
+                    ></button>
+                </div>
+
+                <div class="flex items-center gap-4">
+                    <button
+                        id="theme-toggle"
+                        class="p-3 rounded-full bg-primary-100 text-primary-600 dark:bg-slate-700 dark:text-yellow-300 shadow-sm hover:rotate-12 transition-all active:scale-90 font-bold text-xs uppercase tracking-widest"
+                    >
+                        ✨ Chế độ
+                    </button>
+                </div>
+            </div>
+
+            <div class="text-center mb-10">
+                <h1
+                    class="text-3xl md:text-5xl font-black text-primary-500 dark:text-primary-400 drop-shadow-sm mb-2 transition-colors"
+                >
+                    Góc Chia Sẻ Bé Bự 🍬
+                </h1>
+                <p
+                    class="text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-[0.2em]"
+                >
+                    Cùng gửi file siêu nhanh cho mọi người quanh đây nhé!
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <section class="flex flex-col gap-4 order-1">
+                    <h2
+                        class="text-primary-400 text-lg font-extrabold flex items-center gap-2 px-2 uppercase tracking-tighter transition-colors"
+                    >
+                        🎁 Gửi Quà Cho Bạn Bè
+                    </h2>
+                    <form id="upload-form" class="space-y-4 flex-1">
+                        <div
+                            id="drop-zone"
+                            class="relative border-4 border-dashed border-primary-200 dark:border-slate-600 rounded-[2.5rem] p-6 md:p-10 text-center transition-all duration-300 cursor-pointer group bg-primary-50/30 dark:bg-slate-900/50 overflow-hidden min-h-[280px] flex flex-col justify-center transition-colors"
+                        >
+                            <input
+                                type="file"
+                                id="file-input"
+                                class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20"
+                            />
+
+                            <div
+                                id="monster-container"
+                                class="pointer-events-none relative z-10 flex flex-col items-center"
+                            >
+                                <div
+                                    id="cute-monster"
+                                    class="monster-idle relative w-32 h-32 md:w-40 md:h-40 mx-auto bg-primary-300 dark:bg-primary-500 rounded-[45%_55%_45%_55%/55%_45%_55%_45%] flex flex-col items-center justify-center transition-all duration-300 shadow-[0_15px_30px_var(--shadow-btn)] overflow-hidden cursor-pointer pointer-events-auto active:scale-95 transition-colors"
+                                >
+                                    <div
+                                        id="monster-belly"
+                                        class="absolute bottom-0 left-0 w-full bg-primary-400 dark:bg-primary-600 transition-all duration-300 z-0 transition-colors"
+                                        style="height: 0%"
+                                    ></div>
+                                    <div
+                                        id="monster-percent"
+                                        class="absolute inset-0 flex items-center justify-center font-black text-white/50 text-3xl md:text-4xl z-0 opacity-0 transition-opacity"
+                                    >
+                                        0%
+                                    </div>
+
+                                    <div
+                                        id="eyes-container"
+                                        class="flex space-x-6 mb-2 mt-4 eye-blink z-10 transition-transform"
+                                    >
+                                        <div
+                                            class="eye w-6 h-7 bg-white rounded-full relative overflow-hidden flex items-center justify-center shadow-inner"
+                                        >
+                                            <div
+                                                class="pupil w-3 h-3 bg-slate-800 rounded-full"
+                                            ></div>
+                                        </div>
+                                        <div
+                                            class="eye w-6 h-7 bg-white rounded-full relative overflow-hidden flex items-center justify-center shadow-inner"
+                                        >
+                                            <div
+                                                class="pupil w-3 h-3 bg-slate-800 rounded-full"
+                                            ></div>
+                                        </div>
+                                    </div>
+                                    <div
+                                        id="monster-mouth"
+                                        class="w-6 h-2 bg-white rounded-full transition-all duration-200 ease-out z-10 mt-1"
+                                    ></div>
+                                </div>
+                                <p
+                                    id="drop-text"
+                                    class="font-extrabold text-sm mt-6 text-slate-500 dark:text-slate-400 transition-all"
+                                >
+                                    Thả file vào đây để gửi nhé! 🤤
+                                </p>
+                            </div>
+                        </div>
+                        <button
+                            type="submit"
+                            id="upload-btn"
+                            class="w-full bg-primary-500 text-white py-5 rounded-[2rem] font-black text-lg hover:shadow-lg transition-all active:scale-95 shadow-[0_8px_20px_var(--shadow-btn)] transition-colors"
+                        >
+                            GỬI QUÀ NGAY 🚀
+                        </button>
+                    </form>
+                </section>
+
+                <section class="flex flex-col gap-4 order-2">
+                    <div class="flex justify-between items-center px-2">
+                        <h2
+                            class="text-primary-400 text-lg font-extrabold uppercase tracking-tighter transition-colors"
+                        >
+                            🎒 Quà Mọi Người Đã Gửi
+                        </h2>
+                        <span
+                            id="file-count"
+                            class="text-[10px] font-black bg-primary-100 text-primary-500 px-3 py-1 rounded-full transition-colors"
+                            >0</span
+                        >
+                    </div>
+                    <div class="relative group">
+                        <input
+                            type="text"
+                            id="search-input"
+                            placeholder="Tìm món quà..."
+                            class="w-full pl-12 pr-4 py-4 bg-white dark:bg-slate-700 border-2 border-primary-100 dark:border-slate-600 rounded-3xl text-sm font-bold focus:border-primary-400 outline-none transition-all shadow-sm"
+                        />
+                        <span class="absolute left-5 top-4.5 text-primary-300"
+                            >🔍</span
+                        >
+                    </div>
+                    <div
+                        class="bg-primary-50/20 dark:bg-slate-900/50 rounded-[2.5rem] p-4 flex-1 border-2 border-primary-100/50 dark:border-slate-700 overflow-y-auto max-h-[400px] md:max-h-full transition-colors"
+                    >
+                        <div id="file-list" class="space-y-3"></div>
+                    </div>
+                </section>
+
+                <section
+                    class="flex flex-col gap-4 order-3 md:col-span-2 lg:col-span-1"
+                >
+                    <h2
+                        class="text-primary-400 text-lg font-extrabold uppercase tracking-tighter px-2 transition-colors"
+                    >
+                        📡 Những Người Bạn Quanh Đây
+                    </h2>
+                    <div
+                        class="bg-primary-50/20 dark:bg-slate-900/50 rounded-[2.5rem] p-4 flex-1 border-2 border-primary-100/50 dark:border-slate-700 overflow-y-auto max-h-[300px] md:max-h-full transition-colors"
+                    >
+                        <div
+                            id="wifi-box"
+                            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-3"
+                        ></div>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <script>
+            let allFiles = [];
+            const html = document.documentElement;
+
+            // --- HỆ THỐNG THÔNG BÁO (TOAST) ---
+            function showToast(msg, type = "success") {
+                const container = document.getElementById("toast-container");
+                const toast = document.createElement("div");
+                // class toast-in xử lý animation trượt lên
+                toast.className = `toast-in flex items-center gap-3 px-6 py-4 rounded-2xl shadow-xl border-2 pointer-events-auto backdrop-blur-md transition-all`;
+
+                if (type === "success") {
+                    // Màu sắc theo theme primary cho thông báo thành công
+                    toast.classList.add(
+                        "bg-primary-500",
+                        "border-white",
+                        "text-white",
+                    );
+                    msg = "🎉 " + msg;
+                } else {
+                    // Màu đỏ cho lỗi hoặc cảnh báo
+                    toast.classList.add(
+                        "bg-red-500",
+                        "border-white",
+                        "text-white",
+                    );
+                    msg = "❌ " + msg;
+                }
+
+                toast.innerHTML = `<span class="font-black text-sm uppercase tracking-wide">${msg}</span>`;
+                container.appendChild(toast);
+
+                // Tự động biến mất sau 3 giây
+                setTimeout(() => {
+                    toast.style.opacity = "0";
+                    toast.style.transform = "translateX(20px)"; // Trượt sang phải khi biến mất
+                    setTimeout(() => toast.remove(), 300);
+                }, 3000);
+            }
+
+            // --- XỬ LÝ THEME & DARK MODE ---
+            // Kiểm tra cấu hình hệ thống hoặc local storage
+            if (
+                localStorage.theme === "dark" ||
+                (!("theme" in localStorage) &&
+                    window.matchMedia("(prefers-color-scheme: dark)").matches)
+            )
+                html.classList.add("dark");
+
+            // Nút chuyển đổi Sáng/Tối
+            document.getElementById("theme-toggle").onclick = () => {
+                html.classList.toggle("dark");
+                localStorage.theme = html.classList.contains("dark")
+                    ? "dark"
+                    : "light";
+            };
+
+            // Thiết lập chủ đề màu sắc được lưu
+            const savedColor =
+                localStorage.getItem("monster-color-theme") || "strawberry";
+            html.setAttribute("data-theme", savedColor);
+
+            // Hàm đổi chủ đề và lưu lại
+            window.setTheme = (t) => {
+                html.setAttribute("data-theme", t);
+                localStorage.setItem("monster-color-theme", t);
+            };
+
+            // --- TƯƠNG TÁC VỚI BÉ BỰ & ĐÔI MẮT ---
+            const monster = document.getElementById("cute-monster");
+            const mouth = document.getElementById("monster-mouth");
+            const eyesBox = document.getElementById("eyes-container");
+            const eyes = document.querySelectorAll(".eye");
+
+            // Hiệu ứng khi bị "chọc" (click) vào Bé Bự
+            monster.onclick = () => {
+                mouth.classList.replace("h-2", "h-4"); // Cười
+                eyesBox.classList.add("scale-x-125"); // Híp mắt
+                setTimeout(() => {
+                    mouth.classList.replace("h-4", "h-2");
+                    eyesBox.classList.remove("scale-x-125");
+                }, 1000);
+            };
+
+            // Đôi mắt nhìn theo con trỏ chuột
+            document.addEventListener("mousemove", (e) => {
+                eyes.forEach((eye) => {
+                    const pupil = eye.querySelector(".pupil");
+                    const rect = eye.getBoundingClientRect();
+                    const rad = Math.atan2(
+                        e.clientY - (rect.top + rect.height / 2),
+                        e.clientX - (rect.left + rect.width / 2),
+                    );
+                    // Di chuyển con ngươi trong phạm vi nhỏ (6px)
+                    pupil.style.transform = `translate(${Math.cos(rad) * 6}px, ${Math.sin(rad) * 6}px)`;
+                });
+            });
+
+            // --- TÌM KIẾM & QUẢN LÝ QUÀ ---
+            // Tự động tìm khi gõ vào thanh tìm kiếm
+            document.getElementById("search-input").oninput = (e) => {
+                const term = e.target.value.toLowerCase();
+                renderFiles(
+                    allFiles.filter((f) => f.name.toLowerCase().includes(term)),
+                );
+            };
+
+            // Định dạng dung lượng file
+            function formatBytes(b) {
+                if (!b) return "0 B";
+                const i = Math.floor(Math.log(b) / Math.log(1024));
+                return `${(b / Math.pow(1024, i)).toFixed(1)} ${["B", "KB", "MB", "GB"][i]}`;
+            }
+
+            // Tải danh sách file từ máy chủ
+            async function loadFiles() {
+                try {
+                    const res = await fetch("/api/files");
+                    allFiles = await res.json();
+                    renderFiles(allFiles);
+                    document.getElementById("file-count").innerText =
+                        allFiles.length;
+                } catch (e) {}
+            }
+
+            // Hiển thị danh sách file ra giao diện
+            function renderFiles(list) {
+                const box = document.getElementById("file-list");
+                if (!list.length) {
+                    box.innerHTML = `<div class="text-center py-10 opacity-40 font-bold text-xs">Chưa có món quà nào ở đây... 😿</div>`;
+                    return;
+                }
+                box.innerHTML = list
+                    .map(
+                        (f) => `
+                    <div class="bg-white dark:bg-slate-700 p-4 rounded-3xl shadow-sm flex items-center justify-between group border border-transparent hover:border-primary-200 transition-all active:scale-95">
+                        <div class="flex items-center overflow-hidden flex-1">
+                            <span class="mr-3 text-lg">🍬</span>
+                            <div class="flex flex-col overflow-hidden">
+                                <a href="${f.url}" target="_blank" class="truncate font-black text-xs hover:text-primary-500 transition-colors">${f.name}</a>
+                                <span class="text-[9px] font-black text-primary-400 uppercase tracking-tighter">${formatBytes(f.size || f.Size || 0)}</span>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-2 ml-2">
+                            <a href="${f.url}" download="${f.name}"
+                               onclick="showToast('Đang chuẩn bị gửi file cho bạn...')"
+                               class="p-2.5 bg-primary-50 dark:bg-slate-600 text-primary-600 dark:text-primary-300 rounded-2xl hover:bg-primary-500 hover:text-white transition-all shadow-sm active:scale-90"
+                               title="Nhận quà">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                </svg>
+                            </a>
+
+                            <button onclick="deleteFile('${f.name}')"
+                                    class="p-2.5 bg-red-50 dark:bg-red-900/30 text-red-500 rounded-2xl hover:bg-red-500 hover:text-white transition-all shadow-sm active:scale-90"
+                                    title="Lấy lại">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                `,
+                    )
+                    .join("");
+            }
+
+            // Xử lý khi bấm nút Lấy lại (Xóa) quà
+            async function deleteFile(n) {
+                // Dùng lời thoại thân thiện
+                if (
+                    confirm(
+                        `Bạn muốn lấy lại món quà "${n}" này đúng không? 🥺`,
+                    )
+                ) {
+                    await fetch(`/api/delete/${encodeURIComponent(n)}`);
+                    showToast(`Đã xóa món quà "${n}" rồi nhé!`);
+                    loadFiles();
+                }
+            }
+
+            // --- XỬ LÝ GỬI QUÀ (UPLOAD) ---
+            const form = document.getElementById("upload-form");
+            const fileInput = document.getElementById("file-input");
+            const dropText = document.getElementById("drop-text");
+            const belly = document.getElementById("monster-belly");
+            const percent = document.getElementById("monster-percent");
+
+            // Hiển thị tên file khi người dùng chọn
+            fileInput.onchange = () => {
+                if (fileInput.files[0]) {
+                    dropText.innerText = `Đã chọn: ${fileInput.files[0].name.substring(0, 15)}...`;
+                    showToast("Sẵn sàng rồi, gửi quà thôi!");
+                }
+            };
+
+            // Xử lý gửi file
+            form.onsubmit = async (e) => {
+                e.preventDefault();
+                const file = fileInput.files[0];
+
+                if (!file) {
+                    // Hiệu ứng lắc đầu khi dỗi vì chưa chọn quà
+                    monster.classList.remove("monster-idle");
+                    monster.classList.add("anim-shake-head");
+
+                    dropText.innerText = "BẠN CHƯA CHỌN QUÀ MỜ? 😠";
+                    dropText.classList.add("text-red-500");
+
+                    showToast("Hãy chọn một file để gửi nhé!", "error");
+
+                    setTimeout(() => {
+                        monster.classList.remove("anim-shake-head");
+                        monster.classList.add("monster-idle");
+                        dropText.innerText = "Thả file vào đây để gửi nhé! 🤤";
+                        dropText.classList.remove("text-red-500");
+                    }, 1500);
+                    return;
+                }
+
+                // Vô hiệu hóa nút và hiện hiệu ứng nhai
+                const btn = document.getElementById("upload-btn");
+                btn.disabled = true;
+                btn.classList.add("opacity-50");
+                mouth.classList.add("anim-chew");
+                percent.classList.remove("opacity-0");
+
+                dropText.innerText = "ĐANG CHUYỂN QUÀ... 🚀";
+
+                // Sử dụng XMLHttpRequest để theo dõi tiến trình
+                const xhr = new XMLHttpRequest();
+                xhr.open("POST", "/upload", true);
+
+                // Cập nhật phần trăm và "bụng" Bé Bự
+                xhr.upload.onprogress = (ev) => {
+                    const p = Math.round((ev.loaded / ev.total) * 100);
+                    belly.style.height = p + "%";
+                    percent.innerText = p + "%";
+                };
+
+                // Xử lý khi hoàn thành
+                xhr.onload = () => {
+                    mouth.classList.remove("anim-chew"); // Dừng nhai
+                    if (xhr.status == 200) {
+                        dropText.innerText = "Ợ! GỬI XONG RỒI NHÉ! 💖";
+                        showToast("Món quà của bạn đã được gửi thành công!");
+                        loadFiles(); // Tải lại danh sách
+
+                        // Đặt lại trạng thái ban đầu sau 2 giây
+                        setTimeout(() => {
+                            btn.disabled = false;
+                            btn.classList.remove("opacity-50");
+                            belly.style.height = "0%";
+                            percent.classList.add("opacity-0");
+                            dropText.innerText =
+                                "Thả file vào đây để gửi nhé! 🤤";
+                            fileInput.value = "";
+                        }, 2000);
+                    } else {
+                        // Báo lỗi bằng Toast đỏ
+                        showToast(
+                            "Gửi quà thất bại, thử lại xem sao!",
+                            "error",
+                        );
+                        btn.disabled = false;
+                        btn.classList.remove("opacity-50");
+                    }
+                };
+
+                // Gửi dữ liệu file
+                const fd = new FormData();
+                fd.append("file", file);
+                xhr.send(fd);
+            };
+
+            // --- LẤY THÔNG TIN BẠN BÈ XUNG QUANH (WIFI) ---
+            async function loadWifi() {
+                try {
+                    const res = await fetch("/api/wifi");
+                    const data = await res.json();
+                    document.getElementById("wifi-box").innerHTML = data
+                        .map(
+                            (w) => `
+                        <div class="bg-white dark:bg-slate-700 p-4 rounded-3xl shadow-sm flex items-center justify-between border border-transparent hover:border-primary-100 transition-all">
+                            <div class="flex items-center overflow-hidden">
+                                <span class="mr-3 text-primary-400">📶</span>
+                                <span class="truncate text-[10px] font-black uppercase tracking-tighter">${w.ssid}</span>
+                            </div>
+                            <span class="text-[9px] bg-primary-50 text-primary-600 dark:bg-slate-800 dark:text-primary-300 px-2 py-1 rounded-lg font-black shrink-0 transition-colors">Cách đây ít mét</span>
+                        </div>
+                    `,
+                        )
+                        .join("");
+                } catch (e) {}
+            }
+
+            // Khởi động
+            loadFiles();
+            loadWifi();
+            // Tự động làm mới danh sách (file mỗi 5s, wifi mỗi 10s)
+            setInterval(loadFiles, 5000);
+            setInterval(loadWifi, 10000);
+        </script>
+    </body>
+</html>
