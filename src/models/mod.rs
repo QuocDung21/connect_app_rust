@@ -1,2 +1,1 @@
 pub mod file_info;
-pub mod wifi_info;
