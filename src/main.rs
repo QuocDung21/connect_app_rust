@@ -8,6 +8,7 @@ use mdns_sd::{ServiceDaemon, ServiceInfo};
 use std::collections::HashMap;
 use std::env;
 use std::net::SocketAddr;
+use std::sync::Arc;
 use tokio::fs;
 use tower_http::services::ServeDir;
 // utils
@@ -19,6 +20,13 @@ mod models;
 // handlers
 mod handlers;
 use handlers::{file_handler, page_handler};
+
+#[derive(Clone)]
+struct AppState {
+    pin: String,
+    #[allow(dead_code)]
+    salt: [u8; 32],
+}
 
 #[global_allocator]
 static GLOBAL: mimalloc::MiMalloc = mimalloc::MiMalloc;
@@ -36,6 +44,21 @@ async fn main() {
 
     let my_ip = local_ip_address::local_ip().unwrap_or_else(|_| "127.0.0.1".parse().unwrap());
     let addr = SocketAddr::from(([0, 0, 0, 0], port));
+
+    let pin = env::var("PIN").unwrap_or_else(|_| {
+        // Generate random 4-digit PIN if not set
+        use rand::Rng;
+        let mut rng = rand::thread_rng();
+        format!("{:04}", rng.gen_range(1000..10000))
+    });
+
+    let salt = utils::encryption::generate_salt();
+    println!("🔐 Access PIN: {}", pin);
+
+    let state = Arc::new(AppState {
+        pin: pin.clone(),
+        salt,
+    });
 
     // 2. Cấu hình mDNS (Đặt nickname bebu.local cho IP LAN)
     let instance_name = "bebu";
@@ -62,16 +85,20 @@ async fn main() {
     let api_routes = Router::new()
         .route("/files", get(file_handler::list_files_handler))
         .route("/delete/:file_name", get(file_handler::delete_handler))
-        .route("/clean-uploads", post(file_handler::clean_uploads_handler));
+        .route("/clean-uploads", post(file_handler::clean_uploads_handler))
+        .route("/auth", post(file_handler::auth_handler))
+        .with_state(state.clone());
 
     // 4. Xây dựng App chính
     let app = Router::new()
         .route("/", get(page_handler::index_handler))
         .nest("/api", api_routes)
         .route("/upload", post(file_handler::upload_handler))
+        .with_state(state)
         // Giới hạn 5GB cho dữ liệu lớn
         .layer(DefaultBodyLimit::max(5 * 1024 * 1024 * 1024))
-        .nest_service("/files", ServeDir::new(upload_dir));
+        .nest_service("/files", ServeDir::new(upload_dir))
+        .nest_service("/locales", ServeDir::new("templates/locales"));
 
     // 5. In log thông báo xịn xò
     println!("-------------------------------------------");

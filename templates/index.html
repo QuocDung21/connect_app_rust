@@ -28,10 +28,9 @@
                 },
             };
         </script>
-        <title>Góc Chia Sẻ Bé Bự 🍬</title>
+        <title>Little Monster Sharing</title>
         <style>
             @import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700;900&display=swap");
-
             :root {
                 --p-50: #fff1f2;
                 --p-100: #ffe4e6;
@@ -80,12 +79,10 @@
                 --shadow-main: rgba(245, 158, 11, 0.1);
                 --shadow-btn: rgba(245, 158, 11, 0.3);
             }
-
             body {
                 font-family: "Quicksand", sans-serif;
                 -webkit-tap-highlight-color: transparent;
             }
-
             /* Animations */
             @keyframes blink {
                 0%,
@@ -100,7 +97,6 @@
             .eye-blink {
                 animation: blink 4s infinite;
             }
-
             @keyframes chew {
                 0%,
                 100% {
@@ -117,8 +113,6 @@
             .anim-chew {
                 animation: chew 0.25s infinite;
             }
-
-            /* Hiệu ứng lắc đầu khi dỗi */
             @keyframes shakeHead {
                 0%,
                 100% {
@@ -143,7 +137,6 @@
             .anim-shake-head {
                 animation: shakeHead 0.5s ease-in-out both;
             }
-
             @keyframes bounce-slow {
                 0%,
                 100% {
@@ -156,8 +149,6 @@
             .monster-idle {
                 animation: bounce-slow 3s infinite ease-in-out;
             }
-
-            /* Toast Animation */
             @keyframes slideUp {
                 from {
                     transform: translateY(100%);
@@ -171,12 +162,8 @@
             .toast-in {
                 animation: slideUp 0.3s ease-out forwards;
             }
-
             .pupil {
                 transition: transform 0.1s ease-out;
-            }
-            .no-transition .pupil {
-                transition: none;
             }
             ::-webkit-scrollbar {
                 width: 4px;
@@ -194,6 +181,39 @@
             id="toast-container"
             class="fixed bottom-5 right-5 z-[100] flex flex-col gap-3 pointer-events-none items-end"
         ></div>
+
+        <!-- Login Overlay -->
+        <div
+            id="login-overlay"
+            class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[200] flex items-center justify-center"
+            style="display: none;"
+        >
+            <div class="bg-white dark:bg-slate-800 p-8 rounded-[2rem] shadow-2xl max-w-sm w-full mx-4">
+                <h2 class="text-2xl font-bold text-center mb-6 text-primary-500" data-i18n="enter_pin">
+                    Nhập mã PIN để truy cập
+                </h2>
+                <form id="login-form" class="space-y-4">
+                    <input
+                        type="password"
+                        id="pin-input"
+                        placeholder="Nhập PIN..."
+                        data-i18n-placeholder="pin_placeholder"
+                        class="w-full px-4 py-3 bg-slate-100 dark:bg-slate-700 border-2 border-slate-200 dark:border-slate-600 rounded-2xl text-center text-lg font-mono focus:border-primary-400 outline-none"
+                        required
+                    />
+                    <button
+                        type="submit"
+                        class="w-full bg-primary-500 text-white py-3 rounded-2xl font-bold text-lg hover:bg-primary-600 transition-colors"
+                        data-i18n="login_button"
+                    >
+                        Đăng nhập
+                    </button>
+                </form>
+                <p id="login-error" class="text-red-500 text-center mt-4 text-sm hidden" data-i18n="invalid_pin">
+                    Mã PIN không đúng!
+                </p>
+            </div>
+        </div>
 
         <div
             class="w-full max-w-7xl mx-auto bg-white/90 dark:bg-slate-800/90 backdrop-blur-xl p-6 md:p-10 rounded-[2.5rem] md:rounded-[3.5rem] shadow-[0_20px_50px_var(--shadow-main)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.3)] border-4 border-white dark:border-slate-700 transition-all relative"
@@ -227,11 +247,29 @@
                 </div>
 
                 <div class="flex items-center gap-4">
+                    <select
+                        id="lang-select"
+                        onchange="changeLanguage(this.value)"
+                        class="bg-primary-100 text-primary-600 dark:bg-slate-700 dark:text-slate-200 p-2 rounded-full font-bold text-xs uppercase tracking-widest outline-none cursor-pointer"
+                    >
+                        <option value="vi">🇻🇳 VN</option>
+                        <option value="en">🇺🇸 EN</option>
+                        <option value="zh">🇨🇳 ZH</option>
+                    </select>
                     <button
                         id="theme-toggle"
                         class="p-3 rounded-full bg-primary-100 text-primary-600 dark:bg-slate-700 dark:text-yellow-300 shadow-sm hover:rotate-12 transition-all active:scale-90 font-bold text-xs uppercase tracking-widest"
+                        data-i18n="mode"
                     >
                         ✨ Chế độ
+                    </button>
+                    <button
+                        id="logout-btn"
+                        onclick="logout()"
+                        class="p-3 rounded-full bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-300 shadow-sm hover:rotate-12 transition-all active:scale-90 font-bold text-xs uppercase tracking-widest"
+                        data-i18n="logout_button"
+                    >
+                        🚪 Đăng xuất
                     </button>
                 </div>
             </div>
@@ -239,11 +277,13 @@
             <div class="text-center mb-10">
                 <h1
                     class="text-3xl md:text-5xl font-black text-primary-500 dark:text-primary-400 drop-shadow-sm mb-2 transition-colors"
+                    data-i18n="title"
                 >
-                    Góc Chia Sẻ Bé Bự 🍬
+                    Little Monster Sharing
                 </h1>
                 <p
                     class="text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-[0.2em]"
+                    data-i18n="subtitle"
                 >
                     Cùng gửi file siêu nhanh cho mọi người quanh đây nhé!
                 </p>
@@ -253,31 +293,31 @@
                 <section class="flex flex-col gap-4 order-1">
                     <h2
                         class="text-primary-400 text-lg font-extrabold flex items-center gap-2 px-2 uppercase tracking-tighter transition-colors"
+                        data-i18n="send_gift"
                     >
                         🎁 Gửi Quà Cho Bạn Bè
                     </h2>
                     <form id="upload-form" class="space-y-4 flex-1">
                         <div
                             id="drop-zone"
-                            class="relative border-4 border-dashed border-primary-200 dark:border-slate-600 rounded-[2.5rem] p-6 md:p-10 text-center transition-all duration-300 cursor-pointer group bg-primary-50/30 dark:bg-slate-900/50 overflow-hidden min-h-[280px] flex flex-col justify-center transition-colors"
+                            class="relative border-4 border-dashed border-primary-200 dark:border-slate-600 rounded-[2.5rem] p-6 md:p-10 text-center transition-all duration-300 cursor-pointer group bg-primary-50/30 dark:bg-slate-900/50 overflow-hidden min-h-[280px] flex flex-col justify-center"
                         >
                             <input
                                 type="file"
                                 id="file-input"
                                 class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20"
                             />
-
                             <div
                                 id="monster-container"
                                 class="pointer-events-none relative z-10 flex flex-col items-center"
                             >
                                 <div
                                     id="cute-monster"
-                                    class="monster-idle relative w-32 h-32 md:w-40 md:h-40 mx-auto bg-primary-300 dark:bg-primary-500 rounded-[45%_55%_45%_55%/55%_45%_55%_45%] flex flex-col items-center justify-center transition-all duration-300 shadow-[0_15px_30px_var(--shadow-btn)] overflow-hidden cursor-pointer pointer-events-auto active:scale-95 transition-colors"
+                                    class="monster-idle relative w-32 h-32 md:w-40 md:h-40 mx-auto bg-primary-300 dark:bg-primary-500 rounded-[45%_55%_45%_55%/55%_45%_55%_45%] flex flex-col items-center justify-center transition-all duration-300 shadow-[0_15px_30px_var(--shadow-btn)] overflow-hidden cursor-pointer pointer-events-auto active:scale-95"
                                 >
                                     <div
                                         id="monster-belly"
-                                        class="absolute bottom-0 left-0 w-full bg-primary-400 dark:bg-primary-600 transition-all duration-300 z-0 transition-colors"
+                                        class="absolute bottom-0 left-0 w-full bg-primary-400 dark:bg-primary-600 transition-all duration-300 z-0"
                                         style="height: 0%"
                                     ></div>
                                     <div
@@ -286,7 +326,6 @@
                                     >
                                         0%
                                     </div>
-
                                     <div
                                         id="eyes-container"
                                         class="flex space-x-6 mb-2 mt-4 eye-blink z-10 transition-transform"
@@ -314,6 +353,7 @@
                                 <p
                                     id="drop-text"
                                     class="font-extrabold text-sm mt-6 text-slate-500 dark:text-slate-400 transition-all"
+                                    data-i18n="drop_placeholder"
                                 >
                                     Thả file vào đây để gửi nhé! 🤤
                                 </p>
@@ -322,7 +362,8 @@
                         <button
                             type="submit"
                             id="upload-btn"
-                            class="w-full bg-primary-500 text-white py-5 rounded-[2rem] font-black text-lg hover:shadow-lg transition-all active:scale-95 shadow-[0_8px_20px_var(--shadow-btn)] transition-colors"
+                            class="w-full bg-primary-500 text-white py-5 rounded-[2rem] font-black text-lg hover:shadow-lg transition-all active:scale-95 shadow-[0_8px_20px_var(--shadow-btn)]"
+                            data-i18n="send_btn"
                         >
                             GỬI QUÀ NGAY 🚀
                         </button>
@@ -332,13 +373,14 @@
                 <section class="flex flex-col gap-4 order-2">
                     <div class="flex justify-between items-center px-2">
                         <h2
-                            class="text-primary-400 text-lg font-extrabold uppercase tracking-tighter transition-colors"
+                            class="text-primary-400 text-lg font-extrabold uppercase tracking-tighter"
+                            data-i18n="received"
                         >
                             🎒 Đã Gửi
                         </h2>
                         <span
                             id="file-count"
-                            class="text-[10px] font-black bg-primary-100 text-primary-500 px-3 py-1 rounded-full transition-colors"
+                            class="text-[10px] font-black bg-primary-100 text-primary-500 px-3 py-1 rounded-full"
                             >0</span
                         >
                     </div>
@@ -348,13 +390,11 @@
                             id="search-input"
                             placeholder="Tìm..."
                             class="w-full pl-12 pr-4 py-4 bg-white dark:bg-slate-700 border-2 border-primary-100 dark:border-slate-600 rounded-3xl text-sm font-bold focus:border-primary-400 outline-none transition-all shadow-sm"
+                            data-i18n-placeholder="search_placeholder"
                         />
-                        <!--<span class="absolute left-5 top-4.5 text-primary-300"
-                            >🔍</span
-                        >-->
                     </div>
                     <div
-                        class="bg-primary-50/20 dark:bg-slate-900/50 rounded-[2.5rem] p-4 flex-1 border-2 border-primary-100/50 dark:border-slate-700 overflow-y-auto max-h-[400px] md:max-h-full transition-colors"
+                        class="bg-primary-50/20 dark:bg-slate-900/50 rounded-[2.5rem] p-4 flex-1 border-2 border-primary-100/50 dark:border-slate-700 overflow-y-auto max-h-[400px] md:max-h-full"
                     >
                         <div id="file-list" class="space-y-3"></div>
                     </div>
@@ -363,90 +403,175 @@
         </div>
 
         <script>
+            // --- I18N CONFIGURATION ---
+            let translations = {};
+            let currentLang = localStorage.getItem("lang") || "vi";
+            let appPin = "{{APP_PIN}}";
+            let isLoggedIn = localStorage.getItem("logged_in") === "true";
+            document.getElementById("lang-select").value = currentLang;
+
+            async function loadTranslations(lang) {
+                try {
+                    const response = await fetch(`/locales/${lang}.json`);
+                    translations[lang] = await response.json();
+                } catch (error) {
+                    console.error(
+                        `Failed to load translations for ${lang}:`,
+                        error,
+                    );
+                }
+            }
+
+            function t(key, params = {}) {
+                let str =
+                    (translations[currentLang] &&
+                        translations[currentLang][key]) ||
+                    key;
+                for (let k in params) str = str.replace(`{${k}}`, params[k]);
+                return str;
+            }
+
+
+
+            async function changeLanguage(lang) {
+                if (!translations[lang]) {
+                    await loadTranslations(lang);
+                }
+                currentLang = lang;
+                localStorage.setItem("lang", lang);
+                document.querySelectorAll("[data-i18n]").forEach((el) => {
+                    const key = el.getAttribute("data-i18n");
+                    el.innerText = t(key);
+                });
+                document
+                    .querySelectorAll("[data-i18n-placeholder]")
+                    .forEach((el) => {
+                        const key = el.getAttribute("data-i18n-placeholder");
+                        el.placeholder = t(key);
+                    });
+                loadFiles();
+            }
+
+            // Auth functions
+            function getAuthHeaders() {
+                return {
+                    'Authorization': appPin
+                };
+            }
+
+            async function login(pin) {
+                try {
+                    const response = await fetch('/api/auth', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ pin }),
+                    });
+                    const data = await response.json();
+                    return data.success;
+                } catch (e) {
+                    console.error('Login error:', e);
+                    return false;
+                }
+            }
+
+            function logout() {
+                localStorage.removeItem("logged_in");
+                isLoggedIn = false;
+                showLogin();
+            }
+
+            function showLogin() {
+                document.getElementById("login-overlay").style.display = "flex";
+                document.querySelector("body > div:not(#login-overlay):not(#toast-container)").style.filter = "blur(4px)";
+            }
+
+            function hideLogin() {
+                document.getElementById("login-overlay").style.display = "none";
+                document.querySelector("body > div:not(#login-overlay):not(#toast-container)").style.filter = "none";
+            }
+
+            // Check login on page load
+            if (!isLoggedIn) {
+                showLogin();
+            } else {
+                hideLogin();
+            }
+
+            // Load initial language translations
+            loadTranslations(currentLang).then(() =>
+                changeLanguage(currentLang),
+            );
+
+            // Login form handler
+            document.getElementById("login-form").addEventListener("submit", async (e) => {
+                e.preventDefault();
+                const pin = document.getElementById("pin-input").value;
+                const success = await login(pin);
+                if (success) {
+                    isLoggedIn = true;
+                    localStorage.setItem("logged_in", "true");
+                    hideLogin();
+                    loadFiles(); // Load files after login
+                    showToast(t("toast_ready"));
+                } else {
+                    document.getElementById("login-error").classList.remove("hidden");
+                    setTimeout(() => {
+                        document.getElementById("login-error").classList.add("hidden");
+                    }, 3000);
+                }
+            });
+
             let allFiles = [];
             const html = document.documentElement;
 
-            // --- HỆ THỐNG THÔNG BÁO (TOAST) ---
             function showToast(msg, type = "success") {
                 const container = document.getElementById("toast-container");
                 const toast = document.createElement("div");
-                // class toast-in xử lý animation trượt lên
-                toast.className = `toast-in flex items-center gap-3 px-6 py-4 rounded-2xl shadow-xl border-2 pointer-events-auto backdrop-blur-md transition-all`;
-
-                if (type === "success") {
-                    // Màu sắc theo theme primary cho thông báo thành công
-                    toast.classList.add(
-                        "bg-primary-500",
-                        "border-white",
-                        "text-white",
-                    );
-                    msg = "🎉 " + msg;
-                } else {
-                    // Màu đỏ cho lỗi hoặc cảnh báo
-                    toast.classList.add(
-                        "bg-red-500",
-                        "border-white",
-                        "text-white",
-                    );
-                    msg = "❌ " + msg;
-                }
-
+                toast.className = `toast-in flex items-center gap-3 px-6 py-4 rounded-2xl shadow-xl border-2 pointer-events-auto backdrop-blur-md transition-all ${type === "success" ? "bg-primary-500 border-white text-white" : "bg-red-500 border-white text-white"}`;
                 toast.innerHTML = `<span class="font-black text-sm uppercase tracking-wide">${msg}</span>`;
                 container.appendChild(toast);
-
-                // Tự động biến mất sau 3 giây
                 setTimeout(() => {
                     toast.style.opacity = "0";
-                    toast.style.transform = "translateX(20px)"; // Trượt sang phải khi biến mất
+                    toast.style.transform = "translateX(20px)";
                     setTimeout(() => toast.remove(), 300);
                 }, 3000);
             }
 
-            // --- XỬ LÝ THEME & DARK MODE ---
-            // Kiểm tra cấu hình hệ thống hoặc local storage
             if (
                 localStorage.theme === "dark" ||
                 (!("theme" in localStorage) &&
                     window.matchMedia("(prefers-color-scheme: dark)").matches)
             )
                 html.classList.add("dark");
-
-            // Nút chuyển đổi Sáng/Tối
             document.getElementById("theme-toggle").onclick = () => {
                 html.classList.toggle("dark");
                 localStorage.theme = html.classList.contains("dark")
                     ? "dark"
                     : "light";
             };
-
-            // Thiết lập chủ đề màu sắc được lưu
             const savedColor =
                 localStorage.getItem("monster-color-theme") || "strawberry";
             html.setAttribute("data-theme", savedColor);
-
-            // Hàm đổi chủ đề và lưu lại
             window.setTheme = (t) => {
                 html.setAttribute("data-theme", t);
                 localStorage.setItem("monster-color-theme", t);
             };
 
-            // --- TƯƠNG TÁC VỚI BÉ BỰ & ĐÔI MẮT ---
+            // Interaction logic
             const monster = document.getElementById("cute-monster");
             const mouth = document.getElementById("monster-mouth");
             const eyesBox = document.getElementById("eyes-container");
             const eyes = document.querySelectorAll(".eye");
-
-            // Hiệu ứng khi bị "chọc" (click) vào Bé Bự
             monster.onclick = () => {
-                mouth.classList.replace("h-2", "h-4"); // Cười
-                eyesBox.classList.add("scale-x-125"); // Híp mắt
+                mouth.classList.replace("h-2", "h-4");
+                eyesBox.classList.add("scale-x-125");
                 setTimeout(() => {
                     mouth.classList.replace("h-4", "h-2");
                     eyesBox.classList.remove("scale-x-125");
                 }, 1000);
             };
-
-            // Đôi mắt nhìn theo con trỏ chuột
             document.addEventListener("mousemove", (e) => {
                 eyes.forEach((eye) => {
                     const pupil = eye.querySelector(".pupil");
@@ -455,13 +580,10 @@
                         e.clientY - (rect.top + rect.height / 2),
                         e.clientX - (rect.left + rect.width / 2),
                     );
-                    // Di chuyển con ngươi trong phạm vi nhỏ (6px)
                     pupil.style.transform = `translate(${Math.cos(rad) * 6}px, ${Math.sin(rad) * 6}px)`;
                 });
             });
 
-            // --- TÌM KIẾM & QUẢN LÝ QUÀ ---
-            // Tự động tìm khi gõ vào thanh tìm kiếm
             document.getElementById("search-input").oninput = (e) => {
                 const term = e.target.value.toLowerCase();
                 renderFiles(
@@ -469,17 +591,22 @@
                 );
             };
 
-            // Định dạng dung lượng file
             function formatBytes(b) {
                 if (!b) return "0 B";
                 const i = Math.floor(Math.log(b) / Math.log(1024));
                 return `${(b / Math.pow(1024, i)).toFixed(1)} ${["B", "KB", "MB", "GB"][i]}`;
             }
 
-            // Tải danh sách file từ máy chủ
             async function loadFiles() {
+                if (!isLoggedIn) return;
                 try {
-                    const res = await fetch("/api/files");
+                    const res = await fetch("/api/files", {
+                        headers: getAuthHeaders()
+                    });
+                    if (res.status === 401) {
+                        logout();
+                        return;
+                    }
                     allFiles = await res.json();
                     renderFiles(allFiles);
                     document.getElementById("file-count").innerText =
@@ -487,11 +614,10 @@
                 } catch (e) {}
             }
 
-            // Hiển thị danh sách file ra giao diện
             function renderFiles(list) {
                 const box = document.getElementById("file-list");
                 if (!list.length) {
-                    box.innerHTML = `<div class="text-center py-10 opacity-40 font-bold text-xs">Chưa có món quà nào ở đây... 😿</div>`;
+                    box.innerHTML = `<div class="text-center py-10 opacity-40 font-bold text-xs">${t("no_files")}</div>`;
                     return;
                 }
                 box.innerHTML = list
@@ -505,23 +631,12 @@
                                 <span class="text-[9px] font-black text-primary-400 uppercase tracking-tighter">${formatBytes(f.size || f.Size || 0)}</span>
                             </div>
                         </div>
-
                         <div class="flex items-center gap-2 ml-2">
-                            <a href="${f.url}" download="${f.name}"
-                               onclick="showToast('Đang chuẩn bị gửi file cho bạn...')"
-                               class="p-2.5 bg-primary-50 dark:bg-slate-600 text-primary-600 dark:text-primary-300 rounded-2xl hover:bg-primary-500 hover:text-white transition-all shadow-sm active:scale-90"
-                               title="Nhận quà">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                                </svg>
+                            <a href="${f.url}" download="${f.name}" onclick="showToast('Đang chuẩn bị...')" class="p-2.5 bg-primary-50 dark:bg-slate-600 text-primary-600 dark:text-primary-300 rounded-2xl hover:bg-primary-500 hover:text-white transition-all shadow-sm active:scale-90">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
                             </a>
-
-                            <button onclick="deleteFile('${f.name}')"
-                                    class="p-2.5 bg-red-50 dark:bg-red-900/30 text-red-500 rounded-2xl hover:bg-red-500 hover:text-white transition-all shadow-sm active:scale-90"
-                                    title="Lấy lại">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                </svg>
+                            <button onclick="deleteFile('${f.name}')" class="p-2.5 bg-red-50 dark:bg-red-900/30 text-red-500 rounded-2xl hover:bg-red-500 hover:text-white transition-all shadow-sm active:scale-90">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                             </button>
                         </div>
                     </div>
@@ -530,117 +645,91 @@
                     .join("");
             }
 
-            // Xử lý khi bấm nút Lấy lại (Xóa) quà
             async function deleteFile(n) {
-                // Dùng lời thoại thân thiện
-                if (
-                    confirm(
-                        `Bạn muốn lấy lại món quà "${n}" này đúng không? 🥺`,
-                    )
-                ) {
-                    await fetch(`/api/delete/${encodeURIComponent(n)}`);
-                    showToast(`Đã xóa món quà "${n}" rồi nhé!`);
+                if (confirm(t("confirm_delete", { name: n }))) {
+                    const res = await fetch(`/api/delete/${encodeURIComponent(n)}`, {
+                        headers: getAuthHeaders()
+                    });
+                    if (res.status === 401) {
+                        logout();
+                        return;
+                    }
+                    showToast(t("toast_delete", { name: n }));
                     loadFiles();
                 }
             }
 
-            // --- XỬ LÝ GỬI QUÀ (UPLOAD) ---
             const form = document.getElementById("upload-form");
             const fileInput = document.getElementById("file-input");
             const dropText = document.getElementById("drop-text");
             const belly = document.getElementById("monster-belly");
             const percent = document.getElementById("monster-percent");
 
-            // Hiển thị tên file khi người dùng chọn
             fileInput.onchange = () => {
                 if (fileInput.files[0]) {
                     dropText.innerText = `Đã chọn: ${fileInput.files[0].name.substring(0, 15)}...`;
-                    showToast("Sẵn sàng rồi, gửi quà thôi!");
+                    showToast(t("toast_ready"));
                 }
             };
 
-            // Xử lý gửi file
             form.onsubmit = async (e) => {
                 e.preventDefault();
                 const file = fileInput.files[0];
-
                 if (!file) {
-                    // Hiệu ứng lắc đầu khi dỗi vì chưa chọn quà
                     monster.classList.remove("monster-idle");
                     monster.classList.add("anim-shake-head");
-
-                    dropText.innerText = "BẠN CHƯA CHỌN QUÀ MỜ? 😠";
+                    dropText.innerText = t("monster_angry");
                     dropText.classList.add("text-red-500");
-
-                    showToast("Hãy chọn một file để gửi nhé!", "error");
-
+                    showToast(t("toast_error_no_file"), "error");
                     setTimeout(() => {
                         monster.classList.remove("anim-shake-head");
                         monster.classList.add("monster-idle");
-                        dropText.innerText = "Thả file vào đây để gửi nhé! 🤤";
+                        dropText.innerText = t("drop_placeholder");
                         dropText.classList.remove("text-red-500");
                     }, 1500);
                     return;
                 }
-
-                // Vô hiệu hóa nút và hiện hiệu ứng nhai
                 const btn = document.getElementById("upload-btn");
                 btn.disabled = true;
                 btn.classList.add("opacity-50");
                 mouth.classList.add("anim-chew");
                 percent.classList.remove("opacity-0");
+                dropText.innerText = t("monster_sending");
 
-                dropText.innerText = "ĐANG CHUYỂN QUÀ... 🚀";
-
-                // Sử dụng XMLHttpRequest để theo dõi tiến trình
                 const xhr = new XMLHttpRequest();
                 xhr.open("POST", "/upload", true);
-
-                // Cập nhật phần trăm và "bụng" Bé Bự
+                xhr.setRequestHeader("Authorization", appPin);
                 xhr.upload.onprogress = (ev) => {
                     const p = Math.round((ev.loaded / ev.total) * 100);
                     belly.style.height = p + "%";
                     percent.innerText = p + "%";
                 };
-
-                // Xử lý khi hoàn thành
                 xhr.onload = () => {
-                    mouth.classList.remove("anim-chew"); // Dừng nhai
+                    mouth.classList.remove("anim-chew");
                     if (xhr.status == 200) {
-                        dropText.innerText = "Ợ! GỬI XONG RỒI NHÉ! 💖";
-                        showToast("Món quà của bạn đã được gửi thành công!");
-                        loadFiles(); // Tải lại danh sách
-
-                        // Đặt lại trạng thái ban đầu sau 2 giây
+                        dropText.innerText = t("monster_success");
+                        showToast(t("toast_success_send"));
+                        loadFiles();
                         setTimeout(() => {
                             btn.disabled = false;
                             btn.classList.remove("opacity-50");
                             belly.style.height = "0%";
                             percent.classList.add("opacity-0");
-                            dropText.innerText =
-                                "Thả file vào đây để gửi nhé! 🤤";
+                            dropText.innerText = t("drop_placeholder");
                             fileInput.value = "";
                         }, 2000);
                     } else {
-                        // Báo lỗi bằng Toast đỏ
-                        showToast(
-                            "Gửi quà thất bại, thử lại xem sao!",
-                            "error",
-                        );
+                        showToast(t("toast_error_fail"), "error");
                         btn.disabled = false;
                         btn.classList.remove("opacity-50");
                     }
                 };
-
-                // Gửi dữ liệu file
                 const fd = new FormData();
                 fd.append("file", file);
                 xhr.send(fd);
             };
 
-            // Khởi động
             loadFiles();
-            // Tự động làm mới danh sách file mỗi 5s
             setInterval(loadFiles, 5000);
         </script>
     </body>
